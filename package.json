@@ -1,0 +1,34 @@
+{
+  "name": "arxiv-crawler",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Crawl arXiv.com and post to slack",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "clasp push",
+    "lint": "eslint src/index.ts",
+    "lint:fix": "eslint --fix src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eduidl/arxiv_crawler.git"
+  },
+  "author": "yuma.hiramatsu <yuma.hiramatsu@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eduidl/arxiv_crawler/issues"
+  },
+  "homepage": "https://github.com/eduidl/arxiv_crawler#readme",
+  "devDependencies": {
+    "@types/google-apps-script": "^1.0.7",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {}
+}
