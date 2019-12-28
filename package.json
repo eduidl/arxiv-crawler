@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "clasp push",
+    "build": "webpack",
     "lint": "eslint src/index.ts",
     "lint:fix": "eslint --fix src/index.ts"
   },
@@ -24,11 +25,14 @@
     "@typescript-eslint/eslint-plugin": "^2.13.0",
     "@typescript-eslint/parser": "^2.13.0",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-loader": "^3.0.3",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.19.1",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.4"
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {}
 }

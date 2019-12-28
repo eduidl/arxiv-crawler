@@ -1,7 +1,13 @@
 const SLACK_URL = PropertiesService.getScriptProperties().getProperty(
   "SLACK_URL"
 );
+if (SLACK_URL == null) {
+  throw Error("SLACK_URL should not be nul");
+}
 const SHEET = SpreadsheetApp.getActive().getSheetByName("シート1");
+if (SHEET === null) {
+  throw Error("SHEET should not be null");
+}
 const NS = XmlService.getNamespace("http://www.w3.org/2005/Atom");
 
 class PaperNum {
@@ -44,6 +50,9 @@ class DataBlock {
 const getPaperNumsAndVersion = (str: string): [PaperNum, number] => {
   const re = /(\d{4})\.(\d+)v(\d+)/;
   const match = str.match(re);
+  if (match === null || match.length <= 2) {
+    throw Error;
+  }
   return [
     new PaperNum(parseInt(match[1], 10), parseInt(match[2], 10)),
     parseInt(match[3], 10)
@@ -65,22 +74,24 @@ const getCategoryStr = (item: GoogleAppsScript.XML_Service.Element): string => {
     .getChildren("category", NS)
     .map(category => {
       const str = category.getAttribute("term").getValue();
-      if (str.match(/\./)) return str;
+      return str.match(/\./) ? str : "";
     })
     .filter(str => !!str)
     .join(", ");
 };
 /* eslint-enable @typescript-eslint/camelcase */
 
-const getDataFromArxiv = (cats: string[]): DataBlock[] => {
+const getDataFromArxiv = (categories: string[]): DataBlock[] => {
   const donePaperNums = new PaperNum(
     parseInt(SHEET.getRange(2, 1).getValue(), 10),
     parseInt(SHEET.getRange(2, 2).getValue(), 10)
   );
 
+  const maxResult = 100;
   const url =
-    "http://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending&max_results=40&search_query=" +
-    cats.map((cat: string) => "cat:" + cat).join("+OR+");
+    "http://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending" +
+    `&max_results=${maxResult}&search_query=` +
+    categories.map((category: string) => `cat:${category}`).join("+OR+");
   const xml = XmlService.parse(UrlFetchApp.fetch(url).getContentText());
   const items = xml.getRootElement().getChildren("entry", NS);
 
@@ -100,7 +111,7 @@ const getDataFromArxiv = (cats: string[]): DataBlock[] => {
       };
       /* eslint-enable @typescript-eslint/camelcase */
 
-      if (dataBlocks.length == 0 || dataBlocks[dataBlocks.length - 1].full()) {
+      if (dataBlocks.length === 0 || dataBlocks[dataBlocks.length - 1].full()) {
         dataBlocks.push(new DataBlock(attachment, paperNums));
       } else {
         dataBlocks[dataBlocks.length - 1].insert(attachment, paperNums);
@@ -116,7 +127,7 @@ const postToSlack = (dataBlocks: DataBlock[]): void => {
     if (dataBlock.attachments.length === 0) continue;
 
     const options = {
-      method: "POST",
+      method: "post" as const,
       headers: { "Content-type": "application/json" },
       muteHttpExceptions: true,
       payload: JSON.stringify({ attachments: dataBlock.attachments })
@@ -137,7 +148,7 @@ const postToSlack = (dataBlocks: DataBlock[]): void => {
 };
 
 export function main(): void {
-  const cats = ["cs.CV"];
-  const dataBlocks = getDataFromArxiv(cats);
+  const categories = ["cs.CV"];
+  const dataBlocks = getDataFromArxiv(categories);
   postToSlack(dataBlocks);
 }
