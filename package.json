@@ -1,20 +1,19 @@
 {
   "name": "arxiv-crawler",
   "version": "0.1.0",
-  "private": true,
   "description": "Crawl arXiv.com and post to slack",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "deploy": "clasp push",
     "build": "webpack",
     "lint": "eslint src/index.ts",
-    "lint:fix": "eslint --fix src/index.ts"
+    "lint:fix": "eslint src/index.ts --fix"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/eduidl/arxiv_crawler.git"
   },
-  "author": "yuma.hiramatsu <yuma.hiramatsu@gmail.com>",
+  "author": "Yuma Hiramatsu",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/eduidl/arxiv_crawler/issues"
